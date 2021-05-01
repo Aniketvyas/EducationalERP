@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="{% static 'js/test.js' %}"></script>
+    <style>
+      /* Tooltip container */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+      }
+      
+      /* Tooltip text */
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+       
+        /* Position the tooltip text - see examples below! */
+        position: absolute;
+        z-index: 1;
+      }
+      
+      /* Show the tooltip text when you mouse over the tooltip container */
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+      }
+      </style>
+    <style>
+      #hiddenListElement{
+        display:none;
+      }
+      #hiddenTableELement{
+        display:none;
+      }
+      #hiddenCcElement{
+        display:none;
+      }
+    </style>
+    <script>
+        function list(){ 
+          var a = document.getElementById('hiddenListElement');
+          a.style.display='block';
+        }
+        function Table(){
+          var a = document.getElementById('hiddenTableELement');
+          a.style.display='block';
+        }
+        function showcc(){
+          var a = document.getElementById('hiddenCcElement');
+          a.style.display='block';
+        }
+    </script>
+    <script>
+      $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();   
+      });
+      </script>
+</head>
+<body>
+    <form action="noticeContent" method="POST" class="container" autocomplete="off">
+      {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="inputEmail4">Reference Number</label>
+            <input type="text" class="form-control" name="referenceNO">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputPassword4">Valid Date</label>
+            <input type="date" class="form-control" name="validDate" >
+          </div>
+          <div class="form-group col-md-4">
+            <label for="title">Subject</label>
+            <input type="text" class="form-control" name="title">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputAddress">Content</label>
+          <textarea type="text" class="form-control" name="content"></textarea><br>
+          <div class="container" id = 'hiddenListElement' >
+            <label for="ListInput">List Content(if any)</label>
+            <textarea id="ListInput" class="form-control" data-toogle='tooltip' title="Insert each element in different line" name="ListContent"></textarea>
+          </div>
+          <div class="container" id ='hiddenTableELement'>
+            <label for="TableInput">Table Header</label>
+            <textarea id="TableInput" class="form-control"title="Insert the header of the tables here in comma seperated values just like if you want 3 columns then write A,B,C" data-toggle="tooltip" name="TableHeader"></textarea>
+            <span></span>
+            <label >Table Content</label>
+            <textarea class="form-control" data-toggle="tooltip" title="Insert the data of the tables here in comma seperated values just like if you wantto add 2 rows then write A,B,C 
+                                                                                                                                                                          D,E,F" name='table'></textarea>
+          </div><br>
+          <div class="container" id="hiddenCcElement">
+              <label>CC/BCC</label>
+              <textarea class="form-control" name="cc"></textarea>
+          </div>
+<br>
+
+          <button type="button" class="btn btn-secondary"  onclick="list()">Add list</button>
+          <button type="button" class="btn btn-danger" onclick="Table()">Add Table</button>
+          <button type="button" class="btn btn-success" onclick="showcc()">CC/BCC</button>
+
+          
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+</body>
+</html>

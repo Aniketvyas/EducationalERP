@@ -1,0 +1,116 @@
+{% load static %}
+<html>
+    <head>
+        <title>Edit0r</title>
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"> </script>
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist/dist/bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.3.0"></script>
+        <script src="{% static 'node_modules/table/dist/bundle.js' %}"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        
+    </head>
+    <style>
+        
+        #editorjs{
+            height:100%;
+            background-color:white;
+        }
+    </style>
+    <body>
+        <div class="container-fluid jumbotron">
+            <div class="row">
+                <div class="col-lg-12 col-md-9 com-sm-3" id="ed">
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="inputEmail4">Reference Number</label>
+                            <input type="text" required class="form-control" id="referenceNO" >
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="inputPassword4">Valid Date</label>
+                            <input type="date" required class="form-control" id="validDate" >
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="title">Subject</label>
+                            <input type="text" required class="form-control" id="title">
+                        </div>
+                        <div class="col-lg-12 col-md-9 col-sm-4" id="editorjs"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button">Submit</button>
+        <script>
+            //const Table = require('@editorjs/table');
+            var editor = new EditorJS({
+            // Other configuration properties
+
+            HolderId: 'editorjs',
+            tools: {
+                header: Header,
+                image: SimpleImage,
+                list: {
+                    class: List,
+                    inlineToolbar: true,
+                },
+                image: {
+                    class: window.ImageTool,
+                    config: {
+                    endpoints: {
+                        byFile: 'http://localhost:8000/uploadFile', // Your backend file uploader endpoint
+                        byUrl: 'http://localhost:8000/fetchUrl', // Your endpoint that provides uploading by Url
+                    }
+                }
+            },
+            table: {
+                class: Table,
+                inlineToolbar: true,
+                config: {
+                    
+                },
+                },
+
+
+            },
+            onReady: () => {
+                console.log('Editor.js is ready to work!')
+            }
+            });
+            var a = document.querySelector('button').addEventListener('click',function(){
+                editor.save().then((outputData) => {
+                    refNo =  document.getElementById('referenceNO').value;
+                    validData = document.getElementById('validDate').value;
+                    title = document.getElementById('title').value;
+                    const data = {
+                        'RefNo': refNo,
+                        'ValidDate': validData,
+                        'title' : title
+                        };
+                    var dataToBeSent = {'previousData':data,
+                     'editorData':outputData
+                     };
+                    console.log(dataToBeSent);
+                    var req= new XMLHttpRequest();
+                    req.open("POST",'/notice/test',true);
+                    req.setRequestHeader('Content-type','application/json', 'charset=UTF-8');
+                    req.send(JSON.stringify(dataToBeSent));
+                    
+                    req.onreadystatechange = function() {
+                        //alert(this,readyState,this.status)
+                        if (this.readyState == 4 && this.status == 200){
+                        alert(req.responseText);
+                        }
+                    };
+                }).catch((error) => {
+                console.log('AJAX failed: ', error)
+                });
+            })
+        </script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" ></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+</html>
